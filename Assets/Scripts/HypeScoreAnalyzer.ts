@@ -12,6 +12,7 @@ export class HypeScoreAnalyzer extends BaseScriptComponent {
   
   @ui.group_start("Setup")
   @input private geminiAssistant: GeminiAssistant;
+  @input internetModule: InternetModule;
   @ui.group_end
   
   @ui.separator
@@ -26,6 +27,8 @@ export class HypeScoreAnalyzer extends BaseScriptComponent {
   @input private currentHypeScore: Text; // Text component to display the score
   @input private responsiveness: number = 0.3; // How quickly score adapts (0.1 = slow, 1.0 = instant)
   @input private volatility: number = 0.8; // How much the score can fluctuate (0.1 = stable, 1.0 = wild)
+  @input private apiUrl: string = "https://vihdutta.pythonanywhere.com/hypescore";
+  @input private enableApiUpload: boolean = true; // Enable/disable API uploads
   @ui.group_end
   private lastAnalyzedText: string = "";
   private updateTimer: any = null;
@@ -140,6 +143,9 @@ Hype Score (1-100):`;
               text: text 
             });
             
+            // Upload to API
+            this.uploadHypeScoreToAPI(finalScore);
+            
           } else {
             if (this.enableDebugLogging) {
               print(`Invalid hype score received: "${scoreText}"`);
@@ -234,6 +240,58 @@ Hype Score (1-100):`;
     }
   }
 
+  private async uploadHypeScoreToAPI(score: number): Promise<void> {
+    if (!this.enableApiUpload || !this.internetModule) {
+      return;
+    }
+
+    try {
+      if (this.enableDebugLogging) {
+        print(`Uploading hype score ${score} to API: ${this.apiUrl}`);
+      }
+
+      // Check internet availability
+      if (!global.deviceInfoSystem.isInternetAvailable()) {
+        if (this.enableDebugLogging) {
+          print("Cannot upload hype score: No internet connection");
+        }
+        return;
+      }
+
+      // Create the request payload
+      const payload = {
+        score: score
+      };
+
+      // Create the POST request
+      const request = new Request(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const response = await this.internetModule.fetch(request);
+
+      if (response.status === 200) {
+        if (this.enableDebugLogging) {
+          const responseText = await response.text();
+          print(`Hype score uploaded successfully: ${responseText}`);
+        }
+      } else {
+        if (this.enableDebugLogging) {
+          print(`Failed to upload hype score. Status: ${response.status}`);
+        }
+      }
+
+    } catch (error) {
+      if (this.enableDebugLogging) {
+        print(`Error uploading hype score: ${error}`);
+      }
+    }
+  }
+
   private getHypeLevelText(score: number): string {
     if (score >= 90) return "🔥 INSANE";
     if (score >= 80) return "🚀 PUMPED";
@@ -257,6 +315,9 @@ Hype Score (1-100):`;
       score: clampedScore, 
       text: "Manual override" 
     });
+    
+    // Upload to API
+    this.uploadHypeScoreToAPI(clampedScore);
   }
 
   public resetHypeScore(): void {
@@ -266,5 +327,8 @@ Hype Score (1-100):`;
       score: 50, 
       text: "Reset to neutral" 
     });
+    
+    // Upload to API
+    this.uploadHypeScoreToAPI(50);
   }
 }

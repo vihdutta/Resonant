@@ -27,10 +27,13 @@
   CurrentVisibility: Editable
   MaxVisibility: Editable
   ScriptInputsHidden:
+    apiUrl: false
     currentHypeScore: false
+    enableApiUpload: false
     enableDebugLogging: false
     geminiAssistant: false
     hypeTextComponent: false
+    internetModule: false
     responsiveness: false
     updateInterval: false
     volatility: false
@@ -40,12 +43,15 @@
   DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
   DefaultScriptInputs:
     - geminiAssistant: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      internetModule: !<reference.InternetModule> 00000000-0000-0000-0000-000000000000
       hypeTextComponent: !<reference.Text> 00000000-0000-0000-0000-000000000000
       updateInterval: !<float> 3.000000
       enableDebugLogging: true
       currentHypeScore: !<reference.Text> 00000000-0000-0000-0000-000000000000
       responsiveness: 0.300000
       volatility: 0.800000
+      apiUrl: "https://vihdutta.pythonanywhere.com/hypescore"
+      enableApiUpload: true
   ScriptTypes:
     -
       {}
@@ -55,6 +61,7 @@
     - '// @ui {"widget":"separator"}'
     - '// @ui {"widget":"group_start", "label":"Setup"}'
     - // @input AssignableType geminiAssistant
+    - // @input Asset.InternetModule internetModule
     - '// @ui {"widget":"group_end"}'
     - '// @ui {"widget":"separator"}'
     - '// @ui {"widget":"group_start", "label":"Hype Score Display"}'
@@ -67,4 +74,6 @@
     - // @input Component.Text currentHypeScore
     - // @input float responsiveness = 0.3
     - // @input float volatility = 0.8
+    - '// @input string apiUrl = "https://vihdutta.pythonanywhere.com/hypescore"'
+    - // @input bool enableApiUpload = true
     - '// @ui {"widget":"group_end"}'

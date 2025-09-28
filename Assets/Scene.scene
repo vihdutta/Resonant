@@ -1677,17 +1677,22 @@
     enableDebugLogging: true
     responsiveness: true
     volatility: true
+    apiUrl: true
+    enableApiUpload: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       geminiAssistant: !<MappingBased.AssignableType> 4c6e9c85-a98f-4753-a3ed-ebda814e1999
+      internetModule: !<reference.InternetModule> 9231272f-2097-450a-a2c8-9af202a6b66a
       hypeTextComponent: !<reference.Text> 711ac73b-7dee-4b9d-950b-75a0286d4f2d
       updateInterval: !<float> 3.000000
       enableDebugLogging: true
       currentHypeScore: !<reference.Text> 711ac73b-7dee-4b9d-950b-75a0286d4f2d
       responsiveness: 0.300000
       volatility: 0.800000
+      apiUrl: "https://vihdutta.pythonanywhere.com/hypescore"
+      enableApiUpload: true
   ScriptTypes:
     "":
       {}
@@ -5139,9 +5144,9 @@
   ScriptInputs:
     "":
       internetModule: !<reference.InternetModule> 9231272f-2097-450a-a2c8-9af202a6b66a
-      songWidget1Image: !<reference.Text> 94bda144-302e-42cf-8f57-cf03f7a8c0eb
+      songWidget1Image: !<reference.Image> dfd1b27e-c478-4d57-93b8-a4302ad45333
       songWidget1Song: !<reference.Text> b6dbbfca-54a5-4d2f-80ed-370fa7b398bb
-      songWidget2Image: !<reference.Text> b6dbbfca-54a5-4d2f-80ed-370fa7b398bb
+      songWidget2Image: !<reference.Image> 86aaa31f-db4a-48f2-aaa6-b935aa2cb239
       songWidget2Song: !<reference.Text> 94bda144-302e-42cf-8f57-cf03f7a8c0eb
       updateInterval: !<float> 2.000000
       enableDebugLogging: true

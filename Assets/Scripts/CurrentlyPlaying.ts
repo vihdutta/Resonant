@@ -20,14 +20,14 @@ export class CurrentlyPlaying extends BaseScriptComponent {
   
   @ui.separator
   @ui.group_start("Song Widget 1")
-  @input private songWidget1Image: Text; // For song 1 image URL/name
-  @input private songWidget1Song: Text;  // For song 1 title and artist
+  @input private songWidget1Image: Image; // For song 1 image component
+  @input private songWidget1Song: Text;   // For song 1 title and artist
   @ui.group_end
   
   @ui.separator
   @ui.group_start("Song Widget 2") 
-  @input private songWidget2Image: Text; // For song 2 image URL/name
-  @input private songWidget2Song: Text;  // For song 2 title and artist
+  @input private songWidget2Image: Image; // For song 2 image component
+  @input private songWidget2Song: Text;   // For song 2 title and artist
   @ui.group_end
   
   @ui.separator
@@ -60,18 +60,13 @@ export class CurrentlyPlaying extends BaseScriptComponent {
   }
 
   private initializeWidgets(): void {
-    if (this.songWidget1Image) {
-      this.songWidget1Image.text = "default_song_1";
-    }
     if (this.songWidget1Song) {
       this.songWidget1Song.text = "Loading...";
-    }
-    if (this.songWidget2Image) {
-      this.songWidget2Image.text = "default_song_2";
     }
     if (this.songWidget2Song) {
       this.songWidget2Song.text = "Loading...";
     }
+    // Image components will be set when song data is loaded
   }
 
   private startPeriodicUpdates(): void {
@@ -188,10 +183,24 @@ export class CurrentlyPlaying extends BaseScriptComponent {
     if (this.songWidget1Song) {
       this.songWidget1Song.text = `${songData.artist_1} - ${songData.title_1}`;
     }
+    if (this.songWidget1Image) {
+      // Load texture from Assets/Images/{title}.jpg
+      const texture1 = this.loadSongTexture(songData.title_1);
+      if (texture1) {
+        this.songWidget1Image.mainPass.baseTex = texture1;
+      }
+    }
     
     // Update Song Widget 2  
     if (this.songWidget2Song) {
       this.songWidget2Song.text = `${songData.artist_2} - ${songData.title_2}`;
+    }
+    if (this.songWidget2Image) {
+      // Load texture from Assets/Images/{title}.jpg
+      const texture2 = this.loadSongTexture(songData.title_2);
+      if (texture2) {
+        this.songWidget2Image.mainPass.baseTex = texture2;
+      }
     }
     
     // Store last data for comparison
@@ -199,6 +208,32 @@ export class CurrentlyPlaying extends BaseScriptComponent {
     
     if (this.enableDebugLogging) {
       print(`Updated widgets - Song 1: ${songData.artist_1} - ${songData.title_1}, Song 2: ${songData.artist_2} - ${songData.title_2}`);
+    }
+  }
+
+  private loadSongTexture(title: string): Texture | null {
+    try {
+      if (this.enableDebugLogging) {
+        print(`Attempting to load texture for song: ${title}`);
+      }
+      
+      // In Lens Studio, textures need to be pre-imported and referenced
+      // For now, we'll return null and log the attempt
+      // The actual texture loading would need to be done through the inspector
+      // or by using pre-assigned texture arrays
+      
+      if (this.enableDebugLogging) {
+        print(`Texture loading not implemented yet for: ${title}.jpg`);
+        print(`Expected file: Assets/Images/${title}.jpg`);
+      }
+      
+      return null;
+      
+    } catch (error) {
+      if (this.enableDebugLogging) {
+        print(`Error loading texture for title "${title}": ${error}`);
+      }
+      return null;
     }
   }
 
@@ -210,12 +245,8 @@ export class CurrentlyPlaying extends BaseScriptComponent {
     if (this.songWidget2Song) {
       this.songWidget2Song.text = errorMessage;
     }
-    if (this.songWidget1Image) {
-      this.songWidget1Image.text = "error";
-    }
-    if (this.songWidget2Image) {
-      this.songWidget2Image.text = "error";
-    }
+    // Image components will keep their current texture on error
+    // Could optionally set to a default error texture if available
   }
 
   // Public methods for external control
@@ -248,12 +279,12 @@ export class CurrentlyPlaying extends BaseScriptComponent {
     return this.songWidget2Song ? this.songWidget2Song.text : "";
   }
 
-  public getCurrentImageId1(): string {
-    return this.songWidget1Image ? this.songWidget1Image.text : "";
+  public getCurrentTexture1(): Texture | null {
+    return this.songWidget1Image ? this.songWidget1Image.mainPass.baseTex : null;
   }
 
-  public getCurrentImageId2(): string {
-    return this.songWidget2Image ? this.songWidget2Image.text : "";
+  public getCurrentTexture2(): Texture | null {
+    return this.songWidget2Image ? this.songWidget2Image.mainPass.baseTex : null;
   }
 
   onDestroy() {
