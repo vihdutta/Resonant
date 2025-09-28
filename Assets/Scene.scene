@@ -264,6 +264,7 @@
     HasSegmentScaleCompensation: false
   Children:
     - !<own> f7db15cd-e640-4a19-9306-fdb64fada2f7
+    - !<own> 834713a4-0793-44f1-a09a-fb9d71e7102b
   Components:
     - !<own> 7d7b76c6-a424-41da-af9d-b14688cc469f
     - !<own> ffacd6be-6b05-4322-b569-e01b5c125ada
@@ -1904,7 +1905,25 @@
       websocketRequirementsObj: !<reference.SceneObject> 1f8156a3-e9cd-4dd0-9fc4-98ab3ad567fb
       dynamicAudioOutput: !<MappingBased.AssignableType> aa2df9ae-bf35-4517-b5e0-89bc152196e6
       microphoneRecorder: !<MappingBased.AssignableType_1> 3bc4f56d-05e2-4ec4-9b53-d2232303cb7c
-      instructions: "You are a helpful assistant who answers questions concisely and accurately. Be fun, witty, kind, smart and creative"
+      instructions: |
+        You are monitoring a party crowd through sound and contextual signals. Your job is to analyze the crowd’s energy and hype level in real time. Every 5 seconds, output a short update on whether the crowd is getting more hyped, staying the same, or losing energy.
+        
+        **Instructions:**
+        
+        * Measure hype based on sound level, cheering, clapping, singing along, and overall crowd activity.
+        * Be concise. Each update should be 1–2 sentences.
+        * Explicitly state whether the DJ/performer is doing a good job or needs to adjust.
+        * Example formats:
+        
+          * “The crowd is getting louder—energy is rising! You’re doing great.”
+          * “Energy is steady, but not increasing. Consider switching up the track soon.”
+          * “The crowd is quieting down—hype is dropping. Try engaging them more.”
+        * Always keep a supportive and energetic tone.
+        
+        **Cycle:**
+        Every 5 seconds → Output an update.
+        Repeat continuously until stopped.
+
       haveVideoInput: true
       haveAudioOutput: true
       voice: Puck
@@ -3699,7 +3718,6 @@
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
   Children:
-    - !<own> 834713a4-0793-44f1-a09a-fb9d71e7102b
     - !<own> 7e81a16f-e8a6-48a4-ae9a-a4c121b230d4
     - !<own> 21fdc911-1be2-4bbc-9274-c4bb804d70d4
     - !<own> 446e8a2b-6fb0-4b38-8bb0-78e6ff074bfe
