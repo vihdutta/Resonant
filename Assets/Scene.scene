@@ -1348,13 +1348,13 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 12.000000, y: -20.000000, z: -15.000000}
+    Position: {x: -12.000000, y: -20.000000, z: -15.000000}
     Rotation: {x: -70.000008, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> d6bd84bb-0f86-4721-a9cd-d8adea533210
-    - !<own> a76ebdc8-120d-4c10-b518-7c53b4d5f453
+    - !<own> 98f5c345-d3b2-47ef-8268-d7d22cbc1292
   Components:
     - !<own> afdd199c-0d23-4fd6-bb1e-ec0e34cf3bd9
 - !<SceneObject/3a4261f4-2931-43c1-9fdf-cceacb788e80>
@@ -3212,13 +3212,13 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: -12.000000, y: -20.000000, z: -15.000000}
+    Position: {x: 12.000000, y: -20.000000, z: -15.000000}
     Rotation: {x: -70.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 2dff9c8e-c219-47d0-80a7-061c50afc8b8
-    - !<own> 98f5c345-d3b2-47ef-8268-d7d22cbc1292
+    - !<own> a76ebdc8-120d-4c10-b518-7c53b4d5f453
   Components:
     - !<own> be61e2f6-502b-47eb-bd06-fef82cb1e63f
 - !<SceneObject/73b7e3d8-b7f3-4c24-9f65-4ecfc6871b0d>
@@ -3975,7 +3975,7 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 20
+  FontSize: 15
   Font: !<reference> 00000000-0000-0000-0000-000000000000
   LayoutRect:
     left: -7.500000
@@ -4153,7 +4153,7 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: -5.250000, z: 0.000000}
+    Position: {x: 0.000000, y: -5.250000, z: -0.000002}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 5.000000, y: 5.000000, z: 5.000000}
     HasSegmentScaleCompensation: false
@@ -4414,7 +4414,7 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: -5.250000, z: 0.000000}
+    Position: {x: 0.000000, y: -5.250000, z: -0.000002}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 5.000000, y: 5.000000, z: 5.000000}
     HasSegmentScaleCompensation: false
@@ -4940,7 +4940,7 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 20
+  FontSize: 15
   Font: !<reference> 00000000-0000-0000-0000-000000000000
   LayoutRect:
     left: -7.500000

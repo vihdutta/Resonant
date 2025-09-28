@@ -86,7 +86,7 @@ export class HypeScoreAnalyzer extends BaseScriptComponent {
       print(`Analyzing hype score for text: "${text}"`);
     }
 
-    const hypeAnalysisPrompt = `Analyze this DJ/crowd feedback text and rate the hype level on a scale of 1-100 (where 1 is dead crowd, 50 is neutral, 100 is maximum hype). Only respond with a single number between 1 and 100, nothing else.
+    const hypeAnalysisPrompt = `Analyze this DJ/crowd feedback text and rate the hype level on a scale of 1-100. Be generous with your scoring - crowds are usually more hyped than they appear! Consider any positive energy, engagement, or excitement as high hype. Rate neutral responses as 60-70, positive responses as 70-85, and enthusiastic responses as 85-100. Only respond with a single number between 1 and 100, nothing else.
 
 Text to analyze: "${text}"
 
@@ -179,29 +179,48 @@ Hype Score (1-100):`;
     // Volatility-adjusted change rate
     const baseChangeRate = this.responsiveness * timeDecay;
     
-    // Momentum amplification - if we're trending in the same direction, amplify the change
-    const momentumAlignment = Math.sign(momentum) === Math.sign(scoreDifference) ? 1.2 : 0.8;
+    // Momentum amplification - favor upward trends more than downward trends
+    let momentumAlignment;
+    if (Math.sign(momentum) === Math.sign(scoreDifference)) {
+      // Same direction - amplify upward trends more
+      momentumAlignment = scoreDifference > 0 ? 1.4 : 1.1;
+    } else {
+      // Different direction - resist downward trends more
+      momentumAlignment = scoreDifference > 0 ? 0.9 : 0.6;
+    }
     const adjustedChangeRate = baseChangeRate * momentumAlignment;
     
     // Calculate the actual change amount
     let changeAmount = scoreDifference * adjustedChangeRate;
     
-    // Apply volatility - higher volatility allows bigger jumps
+    // Apply volatility - higher volatility allows bigger jumps, favor upward jumps
     const maxChange = 5 + (this.volatility * 25); // Range: 5-30 based on volatility setting
-    changeAmount = Math.sign(changeAmount) * Math.min(Math.abs(changeAmount), maxChange);
+    if (changeAmount > 0) {
+      // Allow bigger upward jumps
+      changeAmount = Math.min(changeAmount, maxChange * 1.3);
+    } else {
+      // Limit downward jumps more
+      changeAmount = Math.max(changeAmount, -maxChange * 0.7);
+    }
     
-    // Add some randomness for organic feel (small amount)
-    const randomFactor = (Math.random() - 0.5) * this.volatility * 2;
+    // Add upward-biased randomness for organic feel
+    const randomFactor = (Math.random() - 0.3) * this.volatility * 2; // Bias toward positive
     changeAmount += randomFactor;
     
     // Calculate final score
     let newScore = currentScore + changeAmount;
     
-    // Apply momentum influence - if momentum is strong, slightly bias toward the trend
+    // Apply momentum influence - strongly favor upward momentum
     if (Math.abs(momentum) > 2) {
-      const momentumInfluence = momentum * 0.1 * this.volatility;
+      const momentumInfluence = momentum > 0 ? 
+        momentum * 0.3 * this.volatility : // Stronger upward influence
+        momentum * 0.05 * this.volatility;   // Weaker downward influence
       newScore += momentumInfluence;
     }
+    
+    // Add general upward bias - scores naturally drift higher over time
+    const upwardBias = 0.5;
+    newScore += upwardBias;
     
     // Clamp to valid range
     return Math.round(Math.max(1, Math.min(100, newScore)));
