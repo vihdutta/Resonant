@@ -1,0 +1,56 @@
+- !<AssetImportMetadata/cb427ae7-e22d-4170-949b-1738b7080e48>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 86833c76-24cf-4c75-81c6-8e9f29d0a774
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 86833c76-24cf-4c75-81c6-8e9f29d0a774
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 7292aca3-195c-4759-aee7-ecaf853dfb1a
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/7292aca3-195c-4759-aee7-ecaf853dfb1a>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: e53c0336-631c-4a2e-abac-19d239d0145b
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    enableTesting: false
+    nextSongButton: false
+    songWidgetManager: false
+    testAllSongsButton: false
+    testOnStart: false
+    toggleLoopButton: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - songWidgetManager: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      enableTesting: true
+      testOnStart: true
+      testAllSongsButton: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      toggleLoopButton: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      nextSongButton: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input AssignableType songWidgetManager
+    - // @input bool enableTesting = true
+    - // @input bool testOnStart = true
+    - // @input SceneObject testAllSongsButton
+    - // @input SceneObject toggleLoopButton
+    - // @input SceneObject nextSongButton

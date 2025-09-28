@@ -1,0 +1,70 @@
+- !<AssetImportMetadata/c03f2be7-05a4-44ff-b78f-078c1030bdd8>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> d2371c5f-6c07-453d-9353-bf14c3a8008a
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> d2371c5f-6c07-453d-9353-bf14c3a8008a
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> eb5c165c-8d42-435a-85fa-fa6317fc0b08
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/eb5c165c-8d42-435a-85fa-fa6317fc0b08>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 7fa8feff-e96e-4c6c-95a0-c67105f79e31
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    currentHypeScore: false
+    enableDebugLogging: false
+    geminiAssistant: false
+    hypeTextComponent: false
+    responsiveness: false
+    updateInterval: false
+    volatility: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - geminiAssistant: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      hypeTextComponent: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      updateInterval: !<float> 3.000000
+      enableDebugLogging: true
+      currentHypeScore: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      responsiveness: 0.300000
+      volatility: 0.800000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"Hype Score Analyzer - Analyzes text from Gemini Live to determine crowd hype level"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Setup"}'
+    - // @input AssignableType geminiAssistant
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Hype Score Display"}'
+    - // @input Component.Text hypeTextComponent
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - // @input float updateInterval = 3
+    - // @input bool enableDebugLogging = true
+    - // @input Component.Text currentHypeScore
+    - // @input float responsiveness = 0.3
+    - // @input float volatility = 0.8
+    - '// @ui {"widget":"group_end"}'

@@ -66,7 +66,7 @@ export class GeminiAssistant extends BaseScriptComponent {
   @input
   @showIf("enablePeriodicOutput", true)
   @widget(new TextAreaWidget())
-  private periodicInstructions: string = "You are monitoring a party crowd through sound and contextual signals. Your role is to analyze the crowd’s hype and energy in real time and provide **mandatory updates every 6 seconds without fail** to the user who is the DJ. You must never pause, delay, or skip an update. Even if nothing changes, you must still give a status update every 6 seconds. * Measure hype based on crowd activity. Respond regardless of there being 0 people or multiple. Try to give suggestions to the user for improvement. * Be concise. Each update response should be 40 characters or less. No more but it can be less. * Explicitly state whether the DJ/performer is doing a good job or needs to adjust. * Do not wait for new events—always output on schedule. Your top priority is to **incessantly update me every 6 seconds** no matter what.";
+  private periodicInstructions: string = "You are monitoring a party crowd through sound and contextual signals. Your role is to analyze the crowd’s hype and energy in real time and provide **mandatory updates every 6 seconds without fail** to the user who is the DJ. You must never pause, delay, or skip an update. Even if nothing changes, you must still give a status update every 6 seconds. * Measure hype based on crowd activity. Respond regardless of there being 0 people or multiple. Try to give suggestions to the user for improvement. * Be concise. Each update response should be 30 characters or less. No more but it can be less. Make sure each update response is a full statement with proper punctuation. * Explicitly state whether the DJ/performer is doing a good job or needs to adjust. * Do not wait for new events—always output on schedule. Your top priority is to **incessantly update me every 6 seconds** no matter what.";
   @input
   @showIf("enablePeriodicOutput", true)
   @widget(
@@ -104,8 +104,6 @@ export class GeminiAssistant extends BaseScriptComponent {
     args: any;
   }>();
 
-  @input private textComponent: Text;
-
   createGeminiLiveSession() {
     this.websocketRequirementsObj.enabled = true;
     this.dynamicAudioOutput.initialize(24000);
@@ -117,7 +115,6 @@ export class GeminiAssistant extends BaseScriptComponent {
       : "No internet";
 
     this.updateTextEvent.invoke({ text: internetStatus, completed: true });
-    this.textComponent.text = internetStatus;
 
     global.deviceInfoSystem.onInternetStatusChanged.add((args) => {
       internetStatus = args.isInternetAvailable
@@ -125,7 +122,6 @@ export class GeminiAssistant extends BaseScriptComponent {
         : "No internet";
 
       this.updateTextEvent.invoke({ text: internetStatus, completed: true });
-      this.textComponent.text = internetStatus;
     });
 
     this.GeminiLive = Gemini.liveConnect();
@@ -184,7 +180,6 @@ export class GeminiAssistant extends BaseScriptComponent {
               completed: false,
             });
           }
-          this.textComponent.text = transcriptionText;
           completedTextDisplay = false;
         }
 
@@ -202,7 +197,6 @@ export class GeminiAssistant extends BaseScriptComponent {
               completed: false,
             });
           }
-          this.textComponent.text = responseText;
           completedTextDisplay = false;
         }
 
@@ -232,7 +226,6 @@ export class GeminiAssistant extends BaseScriptComponent {
         text: errorText, 
         completed: true 
       });
-      this.textComponent.text = errorText;
       this.isSessionReady = false;
       this.stopPeriodicOutput();
     });
@@ -244,7 +237,6 @@ export class GeminiAssistant extends BaseScriptComponent {
         text: closeText, 
         completed: true 
       });
-      this.textComponent.text = closeText;
       this.isSessionReady = false;
       this.stopPeriodicOutput();
     });
@@ -510,7 +502,6 @@ export class GeminiAssistant extends BaseScriptComponent {
         text: notReadyText, 
         completed: true 
       });
-      this.textComponent.text = notReadyText;
       return;
     }
 
@@ -534,7 +525,6 @@ export class GeminiAssistant extends BaseScriptComponent {
     try {
       this.GeminiLive.send(testMessage);
       print("Test message sent - waiting for response");
-      this.textComponent.text = "Testing connection...";
     } catch (error) {
       print("Test failed: " + error);
       const testFailedText = "Test failed: " + error;
@@ -542,7 +532,6 @@ export class GeminiAssistant extends BaseScriptComponent {
         text: testFailedText, 
         completed: true 
       });
-      this.textComponent.text = testFailedText;
     }
   }
 }
