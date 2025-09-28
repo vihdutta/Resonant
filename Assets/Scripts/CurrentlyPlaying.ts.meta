@@ -1,0 +1,76 @@
+- !<AssetImportMetadata/7ff13ca9-2339-482a-a606-7f2229e63eb6>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 4a3e1bf2-4e80-4fdf-9b43-9252ae31986b
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 4a3e1bf2-4e80-4fdf-9b43-9252ae31986b
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> ab923fd7-d8ac-4a8b-9d4f-00dee5c5437e
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/ab923fd7-d8ac-4a8b-9d4f-00dee5c5437e>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 96dc75b7-61c3-4cd8-bc8c-d50a5512dd87
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    apiUrl: false
+    enableDebugLogging: false
+    internetModule: false
+    songWidget1Image: false
+    songWidget1Song: false
+    songWidget2Image: false
+    songWidget2Song: false
+    updateInterval: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - internetModule: !<reference.InternetModule> 00000000-0000-0000-0000-000000000000
+      songWidget1Image: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      songWidget1Song: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      songWidget2Image: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      songWidget2Song: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      updateInterval: !<float> 1.000000
+      enableDebugLogging: true
+      apiUrl: "https://vihdutta.pythonanywhere.com/"
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"Currently Playing - Fetches live song data from API"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Setup"}'
+    - // @input Asset.InternetModule internetModule
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Song Widget 1"}'
+    - // @input Component.Text songWidget1Image
+    - // @input Component.Text songWidget1Song
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Song Widget 2"}'
+    - // @input Component.Text songWidget2Image
+    - // @input Component.Text songWidget2Song
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - // @input float updateInterval = 1
+    - // @input bool enableDebugLogging = true
+    - '// @input string apiUrl = "https://vihdutta.pythonanywhere.com/"'
+    - '// @ui {"widget":"group_end"}'
