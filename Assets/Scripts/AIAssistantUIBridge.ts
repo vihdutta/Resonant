@@ -54,6 +54,12 @@ export class AIAssistantUIBridge extends BaseScriptComponent {
   }
 
   private onStart() {
+    // Automatically start with Gemini on startup
+    this.assistantType = AssistantType.Gemini;
+    this.hintTitle.text = "Gemini Live Example";
+    this.startWebsocketAndUI();
+
+    // Keep button functionality for manual switching
     this.geminiButton.onButtonPinched.add(() => {
       this.assistantType = AssistantType.Gemini;
       this.hintTitle.text = "Gemini Live Example";

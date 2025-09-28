@@ -1896,7 +1896,10 @@
   Enabled: true
   ScriptAsset: !<reference> 54099172-e311-4b2a-9536-8be605a7d7be
   ScriptInputsDefault:
+    haveAudioOutput: true
     voice: true
+    periodicMethod: true
+    enableDebugLogging: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -1904,26 +1907,33 @@
       websocketRequirementsObj: !<reference.SceneObject> 1f8156a3-e9cd-4dd0-9fc4-98ab3ad567fb
       dynamicAudioOutput: !<MappingBased.AssignableType> aa2df9ae-bf35-4517-b5e0-89bc152196e6
       microphoneRecorder: !<MappingBased.AssignableType_1> 3bc4f56d-05e2-4ec4-9b53-d2232303cb7c
-      instructions: |-
-        You are monitoring a party crowd through sound and contextual signals. Your job is to analyze the crowd’s energy and hype level in real time. Every 5 seconds, output a short update on whether the crowd is getting more hyped, staying the same, or losing energy.
+      instructions: |
+        You are monitoring a party crowd through sound and contextual signals. Your role is to analyze the crowd’s hype and energy in real time and provide **mandatory updates every 6 seconds without fail** to the user who is the DJ. You must never pause, delay, or skip an update. Even if nothing changes, you must still give a status update every 6 seconds.
         
-        Instructions:
+        * Measure hype based on crowd activity. Respond regardless of there being 0 people or multiple. Try to give suggestions to the user for improvement.
         
-        Measure hype based on sound level, cheering, clapping, singing along, and overall crowd activity.
-        Be concise. Each update should be 1–2 sentences.
-        Explicitly state whether the DJ/performer is doing a good job or needs to adjust.
-        Example formats:
-        “The crowd is getting louder—energy is rising! You’re doing great.”
-        “Energy is steady, but not increasing. Consider switching up the track soon.”
-        “The crowd is quieting down—hype is dropping. Try engaging them more.”
-        Always keep a supportive and energetic tone.
-        
-        Cycle:
-        Every 5 seconds → Output an update.
-        Repeat continuously until stopped. Only address me as "Doc"
+        * Be concise. Each update response should be 40 characters or less. No more but it can be less.
+        * Explicitly state whether the DJ/performer is doing a good job or needs to adjust.
+        * Do not wait for new events—always output on schedule.
+        Your top priority is to **incessantly update me every 6 seconds** no matter what.
+
       haveVideoInput: true
-      haveAudioOutput: true
+      haveAudioOutput: false
       voice: Puck
+      enablePeriodicOutput: true
+      periodicOutputInterval: !<float> 6.000000
+      periodicInstructions: |-
+        You are monitoring a party crowd through sound and contextual signals. Your role is to analyze the crowd’s hype and energy in real time and provide **mandatory updates every 6 seconds without fail** to the user who is the DJ. You must never pause, delay, or skip an update. Even if nothing changes, you must still give a status update every 6 seconds.
+        
+        * Measure hype based on crowd activity. Respond regardless of there being 0 people or multiple. Try to give suggestions to the user for improvement.
+        
+        * Be concise. Each update response should be 40 characters or less. No more but it can be less.
+        * Explicitly state whether the DJ/performer is doing a good job or needs to adjust.
+        * Do not wait for new events—always output on schedule.
+        Your top priority is to **incessantly update me every 6 seconds** no matter what.
+      periodicMethod: text
+      enableDebugLogging: true
+      textComponent: !<reference.Text> 711ac73b-7dee-4b9d-950b-75a0286d4f2d
   ScriptTypes:
     "":
       {}
@@ -3061,7 +3071,7 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 36
   Font: !<reference> 00000000-0000-0000-0000-000000000000
   LayoutRect:
     left: -7.500000
@@ -4336,15 +4346,16 @@
       websocketRequirementsObj: !<reference.SceneObject> 1f8156a3-e9cd-4dd0-9fc4-98ab3ad567fb
       dynamicAudioOutput: !<MappingBased.AssignableType> aa2df9ae-bf35-4517-b5e0-89bc152196e6
       microphoneRecorder: !<MappingBased.AssignableType_1> 3bc4f56d-05e2-4ec4-9b53-d2232303cb7c
-      instructions: |-
+      instructions: |
         You are monitoring a party crowd through sound and contextual signals. Your job is to analyze the crowd’s energy and hype level in real time. Every 5 seconds, output a short update on whether the crowd is getting more hyped, staying the same, or losing energy.
-        
         Instructions:
         
-        Measure hype based on sound level, cheering, clapping, singing along, and overall crowd activity.
-        Be concise. Each update should be 1–2 sentences.
+        Measure hype based on sound level, posture, facial expressions, cheering, clapping, singing along, and overall crowd activity.
+        Be concise. Each update should be 20 CHARACTERS or less. No longer.
+        
         Explicitly state whether the DJ/performer is doing a good job or needs to adjust.
         Example formats:
+        
         “The crowd is getting louder—energy is rising! You’re doing great.”
         “Energy is steady, but not increasing. Consider switching up the track soon.”
         “The crowd is quieting down—hype is dropping. Try engaging them more.”
@@ -4353,6 +4364,7 @@
         Cycle:
         Every 5 seconds → Output an update.
         Repeat continuously until stopped.
+
       haveAudioOutput: false
       voice: coral
   ScriptTypes:

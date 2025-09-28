@@ -28,10 +28,16 @@
   MaxVisibility: Editable
   ScriptInputsHidden:
     dynamicAudioOutput: false
+    enableDebugLogging: false
+    enablePeriodicOutput: false
     haveAudioOutput: false
     haveVideoInput: false
     instructions: false
     microphoneRecorder: false
+    periodicInstructions: false
+    periodicMethod: false
+    periodicOutputInterval: false
+    textComponent: false
     voice: false
     websocketRequirementsObj: false
   ScriptTypesHidden:
@@ -46,6 +52,12 @@
       haveVideoInput: false
       haveAudioOutput: false
       voice: Puck
+      enablePeriodicOutput: false
+      periodicOutputInterval: !<float> 5.000000
+      periodicInstructions: Provide a brief update or insight based on current context
+      periodicMethod: text
+      enableDebugLogging: true
+      textComponent: !<reference.Text> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
@@ -71,3 +83,12 @@
     - '// @input string voice = "Puck" {"widget":"combobox", "values":[{"label":"Puck", "value":"Puck"}, {"label":"Charon", "value":"Charon"}, {"label":"Kore", "value":"Kore"}, {"label":"Fenrir", "value":"Fenrir"}, {"label":"Aoede", "value":"Aoede"}, {"label":"Leda", "value":"Leda"}, {"label":"Orus", "value":"Orus"}, {"label":"Zephyr", "value":"Zephyr"}], "showIf":"haveAudioOutput", "showIfValue":true}'
     - '// @ui {"widget":"group_end"}'
     - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Periodic Output"}'
+    - // @input bool enablePeriodicOutput
+    - '// @input float periodicOutputInterval = 10 {"showIf":"enablePeriodicOutput", "showIfValue":true}'
+    - '// @input string periodicInstructions = "You are monitoring a party crowd through sound and contextual signals. Your role is to analyze the crowd’s hype and energy in real time and provide **mandatory updates every 6 seconds without fail** to the user who is the DJ. You must never pause, delay, or skip an update. Even if nothing changes, you must still give a status update every 6 seconds. * Measure hype based on crowd activity. Respond regardless of there being 0 people or multiple. Try to give suggestions to the user for improvement. * Be concise. Each update response should be 40 characters or less. No more but it can be less. * Explicitly state whether the DJ/performer is doing a good job or needs to adjust. * Do not wait for new events—always output on schedule. Your top priority is to **incessantly update me every 6 seconds** no matter what." {"widget":"text_area", "showIf":"enablePeriodicOutput", "showIfValue":true}'
+    - '// @input string periodicMethod = "text" {"widget":"combobox", "values":[{"label":"Text Messages", "value":"text"}, {"label":"Activity Signals", "value":"activity"}, {"label":"Both Methods", "value":"both"}], "showIf":"enablePeriodicOutput", "showIfValue":true}'
+    - '// @input bool enableDebugLogging = true {"showIf":"enablePeriodicOutput", "showIfValue":true}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - // @input Component.Text textComponent

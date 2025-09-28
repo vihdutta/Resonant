@@ -57,6 +57,31 @@ export class GeminiAssistant extends BaseScriptComponent {
   private voice: string = "Puck";
   @ui.group_end
   @ui.separator
+  @ui.group_start("Periodic Output")
+  @input
+  private enablePeriodicOutput: boolean = false;
+  @input
+  @showIf("enablePeriodicOutput", true)
+  private periodicOutputInterval: number = 10.0; // seconds
+  @input
+  @showIf("enablePeriodicOutput", true)
+  @widget(new TextAreaWidget())
+  private periodicInstructions: string = "You are monitoring a party crowd through sound and contextual signals. Your role is to analyze the crowd’s hype and energy in real time and provide **mandatory updates every 6 seconds without fail** to the user who is the DJ. You must never pause, delay, or skip an update. Even if nothing changes, you must still give a status update every 6 seconds. * Measure hype based on crowd activity. Respond regardless of there being 0 people or multiple. Try to give suggestions to the user for improvement. * Be concise. Each update response should be 40 characters or less. No more but it can be less. * Explicitly state whether the DJ/performer is doing a good job or needs to adjust. * Do not wait for new events—always output on schedule. Your top priority is to **incessantly update me every 6 seconds** no matter what.";
+  @input
+  @showIf("enablePeriodicOutput", true)
+  @widget(
+    new ComboBoxWidget([
+      new ComboBoxItem("Text Messages", "text"),
+      new ComboBoxItem("Activity Signals", "activity"),
+      new ComboBoxItem("Both Methods", "both"),
+    ])
+  )
+  private periodicMethod: string = "text";
+  @input
+  @showIf("enablePeriodicOutput", true)
+  private enableDebugLogging: boolean = true;
+  @ui.group_end
+  @ui.separator
   private audioProcessor: AudioProcessor = new AudioProcessor();
   private videoController: VideoController = new VideoController(
     1500,
@@ -64,6 +89,8 @@ export class GeminiAssistant extends BaseScriptComponent {
     EncodingType.Jpg
   );
   private GeminiLive: GeminiLiveWebsocket;
+  private periodicTimer: any = null;
+  private isSessionReady: boolean = false;
 
   public updateTextEvent: Event<{ text: string; completed: boolean }> =
     new Event<{ text: string; completed: boolean }>();
@@ -77,6 +104,8 @@ export class GeminiAssistant extends BaseScriptComponent {
     args: any;
   }>();
 
+  @input private textComponent: Text;
+
   createGeminiLiveSession() {
     this.websocketRequirementsObj.enabled = true;
     this.dynamicAudioOutput.initialize(24000);
@@ -88,13 +117,15 @@ export class GeminiAssistant extends BaseScriptComponent {
       : "No internet";
 
     this.updateTextEvent.invoke({ text: internetStatus, completed: true });
+    this.textComponent.text = internetStatus;
 
     global.deviceInfoSystem.onInternetStatusChanged.add((args) => {
       internetStatus = args.isInternetAvailable
-        ? "Reconnected to internete"
+        ? "Reconnected to internet"
         : "No internet";
 
       this.updateTextEvent.invoke({ text: internetStatus, completed: true });
+      this.textComponent.text = internetStatus;
     });
 
     this.GeminiLive = Gemini.liveConnect();
@@ -107,12 +138,20 @@ export class GeminiAssistant extends BaseScriptComponent {
     let completedTextDisplay = true;
 
     this.GeminiLive.onMessage.add((message) => {
-      print("Received message: " + JSON.stringify(message));
+      if (this.enableDebugLogging) {
+        print("Received message: " + JSON.stringify(message));
+      }
       // Setup complete, begin sending data
       if (message.setupComplete) {
         message = message as GeminiTypes.Live.SetupCompleteEvent;
         print("Setup complete");
+        this.isSessionReady = true;
         this.setupInputs();
+        
+        // Start periodic output if enabled
+        if (this.enablePeriodicOutput) {
+          this.startPeriodicOutput();
+        }
       }
 
       if (message?.serverContent) {
@@ -133,33 +172,37 @@ export class GeminiAssistant extends BaseScriptComponent {
         }
         // Show output transcription
         else if (message?.serverContent?.outputTranscription?.text) {
+          const transcriptionText = message.serverContent.outputTranscription?.text;
           if (completedTextDisplay) {
             this.updateTextEvent.invoke({
-              text: message.serverContent.outputTranscription?.text,
+              text: transcriptionText,
               completed: true,
             });
           } else {
             this.updateTextEvent.invoke({
-              text: message.serverContent.outputTranscription?.text,
+              text: transcriptionText,
               completed: false,
             });
           }
+          this.textComponent.text = transcriptionText;
           completedTextDisplay = false;
         }
 
         // Show text response
         else if (message?.serverContent?.modelTurn?.parts?.[0]?.text) {
+          const responseText = message.serverContent.modelTurn.parts[0].text;
           if (completedTextDisplay) {
             this.updateTextEvent.invoke({
-              text: message.serverContent.modelTurn.parts[0].text,
+              text: responseText,
               completed: true,
             });
           } else {
             this.updateTextEvent.invoke({
-              text: message.serverContent.modelTurn.parts[0].text,
+              text: responseText,
               completed: false,
             });
           }
+          this.textComponent.text = responseText;
           completedTextDisplay = false;
         }
 
@@ -183,11 +226,27 @@ export class GeminiAssistant extends BaseScriptComponent {
     });
 
     this.GeminiLive.onError.add((event) => {
-      print("Error: " + event);
+      print("Gemini Live Error: " + JSON.stringify(event));
+      const errorText = "Connection error - check API key and internet";
+      this.updateTextEvent.invoke({ 
+        text: errorText, 
+        completed: true 
+      });
+      this.textComponent.text = errorText;
+      this.isSessionReady = false;
+      this.stopPeriodicOutput();
     });
 
     this.GeminiLive.onClose.add((event) => {
       print("Connection closed: " + event.reason);
+      const closeText = "Connection closed: " + event.reason;
+      this.updateTextEvent.invoke({ 
+        text: closeText, 
+        completed: true 
+      });
+      this.textComponent.text = closeText;
+      this.isSessionReady = false;
+      this.stopPeriodicOutput();
     });
   }
 
@@ -331,6 +390,159 @@ export class GeminiAssistant extends BaseScriptComponent {
       this.dynamicAudioOutput.interruptAudioOutput();
     } else {
       print("DynamicAudioOutput is not initialized.");
+    }
+  }
+
+  public startPeriodicOutput(): void {
+    if (!this.enablePeriodicOutput || !this.isSessionReady) {
+      return;
+    }
+
+    // Clear any existing timer
+    this.stopPeriodicOutput();
+
+    print(`Starting periodic output every ${this.periodicOutputInterval} seconds`);
+    
+    // Create a recursive timeout function for periodic execution
+    const scheduleNext = () => {
+      this.periodicTimer = setTimeout(() => {
+        if (this.enablePeriodicOutput && this.isSessionReady) {
+          if (this.periodicMethod === "text") {
+            this.sendPeriodicRequest();
+          } else if (this.periodicMethod === "activity") {
+            this.sendActivitySignal();
+          } else if (this.periodicMethod === "both") {
+            this.sendPeriodicRequest();
+            // Send activity signal 2.5 seconds later
+            setTimeout(() => {
+              if (this.enablePeriodicOutput && this.isSessionReady) {
+                this.sendActivitySignal();
+              }
+            }, (this.periodicOutputInterval * 1000) / 2);
+          }
+          scheduleNext(); // Schedule the next execution
+        }
+      }, this.periodicOutputInterval * 1000);
+    };
+
+    scheduleNext();
+  }
+
+  public stopPeriodicOutput(): void {
+    if (this.periodicTimer) {
+      this.periodicTimer.cancelled = true;
+      this.periodicTimer = null;
+      print("Periodic output stopped");
+    }
+  }
+
+  private sendPeriodicRequest(): void {
+    if (!this.GeminiLive || !this.isSessionReady) {
+      print("Cannot send periodic request - session not ready");
+      return;
+    }
+
+    print("Sending periodic request to Gemini Live");
+    
+    // Method 1: Send a text message with the periodic instructions
+    const textMessage = {
+      client_content: {
+        turns: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: this.periodicInstructions
+              }
+            ]
+          }
+        ],
+        turn_complete: true
+      }
+    } as GeminiTypes.Live.ClientContent;
+
+    try {
+      this.GeminiLive.send(textMessage);
+      print("Periodic message sent successfully");
+    } catch (error) {
+      print("Error sending periodic message: " + error);
+    }
+  }
+
+  // Alternative method using activity signals
+  private sendActivitySignal(): void {
+    if (!this.GeminiLive || !this.isSessionReady) {
+      return;
+    }
+
+    const activityMessage = {
+      realtime_input: {
+        activity_start: true,
+        text: this.periodicInstructions
+      }
+    } as GeminiTypes.Live.RealtimeInput;
+
+    try {
+      this.GeminiLive.send(activityMessage);
+      print("Activity signal sent");
+    } catch (error) {
+      print("Error sending activity signal: " + error);
+    }
+  }
+
+  // Public method to toggle periodic output on/off
+  public togglePeriodicOutput(enabled: boolean): void {
+    this.enablePeriodicOutput = enabled;
+    
+    if (enabled && this.isSessionReady) {
+      this.startPeriodicOutput();
+    } else {
+      this.stopPeriodicOutput();
+    }
+  }
+
+  // Manual test method - call this to test if the connection works
+  public testConnection(): void {
+    if (!this.isSessionReady) {
+      print("Session not ready - try creating session first");
+      const notReadyText = "Session not ready - check connection";
+      this.updateTextEvent.invoke({ 
+        text: notReadyText, 
+        completed: true 
+      });
+      this.textComponent.text = notReadyText;
+      return;
+    }
+
+    print("Testing Gemini Live connection...");
+    const testMessage = {
+      client_content: {
+        turns: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: "Say 'Connection test successful' if you can hear me."
+              }
+            ]
+          }
+        ],
+        turn_complete: true
+      }
+    } as GeminiTypes.Live.ClientContent;
+
+    try {
+      this.GeminiLive.send(testMessage);
+      print("Test message sent - waiting for response");
+      this.textComponent.text = "Testing connection...";
+    } catch (error) {
+      print("Test failed: " + error);
+      const testFailedText = "Test failed: " + error;
+      this.updateTextEvent.invoke({ 
+        text: testFailedText, 
+        completed: true 
+      });
+      this.textComponent.text = testFailedText;
     }
   }
 }
