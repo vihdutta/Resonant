@@ -1904,7 +1904,23 @@
       websocketRequirementsObj: !<reference.SceneObject> 1f8156a3-e9cd-4dd0-9fc4-98ab3ad567fb
       dynamicAudioOutput: !<MappingBased.AssignableType> aa2df9ae-bf35-4517-b5e0-89bc152196e6
       microphoneRecorder: !<MappingBased.AssignableType_1> 3bc4f56d-05e2-4ec4-9b53-d2232303cb7c
-      instructions: "You are a helpful assistant who answers questions concisely and accurately. Be fun, witty, kind, smart and creative"
+      instructions: |-
+        You are monitoring a party crowd through sound and contextual signals. Your job is to analyze the crowd’s energy and hype level in real time. Every 5 seconds, output a short update on whether the crowd is getting more hyped, staying the same, or losing energy.
+        
+        Instructions:
+        
+        Measure hype based on sound level, cheering, clapping, singing along, and overall crowd activity.
+        Be concise. Each update should be 1–2 sentences.
+        Explicitly state whether the DJ/performer is doing a good job or needs to adjust.
+        Example formats:
+        “The crowd is getting louder—energy is rising! You’re doing great.”
+        “Energy is steady, but not increasing. Consider switching up the track soon.”
+        “The crowd is quieting down—hype is dropping. Try engaging them more.”
+        Always keep a supportive and energetic tone.
+        
+        Cycle:
+        Every 5 seconds → Output an update.
+        Repeat continuously until stopped. Only address me as "Doc"
       haveVideoInput: true
       haveAudioOutput: true
       voice: Puck
@@ -4311,6 +4327,7 @@
   Enabled: true
   ScriptAsset: !<reference> cb29133c-dd8a-4158-b6bc-b394b65e77da
   ScriptInputsDefault:
+    haveAudioOutput: true
     voice: true
   ScriptTypesDefault:
     {}
@@ -4319,8 +4336,24 @@
       websocketRequirementsObj: !<reference.SceneObject> 1f8156a3-e9cd-4dd0-9fc4-98ab3ad567fb
       dynamicAudioOutput: !<MappingBased.AssignableType> aa2df9ae-bf35-4517-b5e0-89bc152196e6
       microphoneRecorder: !<MappingBased.AssignableType_1> 3bc4f56d-05e2-4ec4-9b53-d2232303cb7c
-      instructions: "You are a helpful assistant who answers questions concisely and accurately. Be fun, witty, kind, smart and creative"
-      haveAudioOutput: true
+      instructions: |-
+        You are monitoring a party crowd through sound and contextual signals. Your job is to analyze the crowd’s energy and hype level in real time. Every 5 seconds, output a short update on whether the crowd is getting more hyped, staying the same, or losing energy.
+        
+        Instructions:
+        
+        Measure hype based on sound level, cheering, clapping, singing along, and overall crowd activity.
+        Be concise. Each update should be 1–2 sentences.
+        Explicitly state whether the DJ/performer is doing a good job or needs to adjust.
+        Example formats:
+        “The crowd is getting louder—energy is rising! You’re doing great.”
+        “Energy is steady, but not increasing. Consider switching up the track soon.”
+        “The crowd is quieting down—hype is dropping. Try engaging them more.”
+        Always keep a supportive and energetic tone.
+        
+        Cycle:
+        Every 5 seconds → Output an update.
+        Repeat continuously until stopped.
+      haveAudioOutput: false
       voice: coral
   ScriptTypes:
     "":
